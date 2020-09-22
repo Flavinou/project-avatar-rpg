@@ -41,12 +41,12 @@ namespace RPG.Combat
 
             if (!IsInRange())
             {
-                Debug.Log(gameObject.name + " is moving !");
+                //Debug.Log(gameObject.name + " is moving !");
                 _movementController.MoveTo(_attackTarget.transform.position, 1f);
             }
             else
             {
-                Debug.Log(gameObject.name + " is going to attack !");
+                //Debug.Log(gameObject.name + " is going to attack !");
                 _movementController.Cancel();
                 AttackBehaviour();
             }
@@ -96,11 +96,11 @@ namespace RPG.Combat
 
             if (_currentWeapon.HasProjectile())
             {
-                _currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, _attackTarget);
+                _currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, _attackTarget, gameObject);
             }
             else
             {
-                _attackTarget.TakeDamage(_currentWeapon.GetDamage());
+                _attackTarget.TakeDamage(gameObject, _currentWeapon.GetDamage());
             }
         }
 
@@ -126,6 +126,11 @@ namespace RPG.Combat
         {
             _currentWeapon = weapon;
             weapon.Spawn(rightHandTransform, leftHandTransform, _animator);
+        }
+
+        public Health GetTarget()
+        {
+            return _attackTarget;
         }
 
         public object CaptureState()

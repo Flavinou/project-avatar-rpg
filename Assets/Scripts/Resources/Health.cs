@@ -2,24 +2,20 @@
 using RPG.Saving;
 using RPG.Stats;
 using RPG.Core;
+using System;
 
 namespace RPG.Resources
 {
     public class Health : MonoBehaviour, ISaveable
     {
-        [SerializeField] private float healthPoints = 100f;
+        private float healthPoints = -1f;
 
         private Animator _animator;
         private ActionScheduler _actionScheduler;
         private BaseStats _baseStats;
 
         private bool isDead;
-
-        public bool IsDead()
-        {
-            return isDead;
-        }
-
+         
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -29,26 +25,47 @@ namespace RPG.Resources
 
         private void Start()
         {
-            healthPoints = _baseStats.GetHealth();
+            if (healthPoints < 0)
+                healthPoints = _baseStats.GetStat(Stat.Health);
         }
 
-        public void TakeDamage(float damage)
+        public bool IsDead()
+        {
+            return isDead;
+        }
+
+        public float GetPercentage() 
+        {
+            return 100 * (healthPoints / GetComponent<BaseStats>().GetStat(Stat.Health));
+        }
+
+        public void TakeDamage(GameObject instigator, float damage)
         {
             healthPoints = Mathf.Max(healthPoints - damage, 0f);
             
             if (healthPoints <= 0f)
             {
                 Die();
+                AwardExperience(instigator);
             }
         }
 
-        public void Die()
+        private void Die()
         {
             if (isDead) return;
 
             isDead = true;
             _animator.SetTrigger("Die");
             _actionScheduler.CancelCurrentAction();
+        }
+
+        private void AwardExperience(GameObject instigator)
+        {
+            Experience experience = instigator.GetComponent<Experience>();
+
+            if (experience == null) return;
+
+            experience.GainExperience(GetComponent<BaseStats>().GetStat(Stat.ExperienceReward));
         }
 
         public object CaptureState()
