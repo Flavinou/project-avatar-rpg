@@ -2,6 +2,7 @@
 using RPG.Movement;
 using RPG.Combat;
 using RPG.Resources;
+using System;
 
 namespace RPG.Control
 {
@@ -10,6 +11,23 @@ namespace RPG.Control
         private Mover _movementController;
         private Fighter _fighter;
         private Health _health;
+
+        enum CursorType 
+        {
+            None,
+            Movement,
+            Combat
+        }
+
+        [System.Serializable]
+        struct CursorMapping
+        {
+            public CursorType type;
+            public Texture2D texture;
+            public Vector2 hotspot;
+        }
+
+        [SerializeField] CursorMapping[] cursorMappings = null;
 
         void Awake()
         {
@@ -27,6 +45,8 @@ namespace RPG.Control
 
             if (InteractWithCombat()) return;
             if (InteractWithMovement()) return;
+
+            SetCursor(CursorType.None);
         }
 
         private bool InteractWithCombat()
@@ -46,6 +66,8 @@ namespace RPG.Control
                     _fighter.Attack(target.gameObject);
                 }
 
+                SetCursor(CursorType.Combat);
+
                 // If we found one, return true
                 return true;
             }
@@ -64,10 +86,31 @@ namespace RPG.Control
                     _movementController.StartMoveAction(hit.point, 1f);
                 }
 
+                SetCursor(CursorType.Movement);
+
                 return true;
             }
 
             return false;
+        }
+
+        private void SetCursor(CursorType type)
+        {
+            CursorMapping mapping = GetCursorMapping(type);
+            Cursor.SetCursor(mapping.texture, mapping.hotspot, CursorMode.Auto);
+        }
+
+        private CursorMapping GetCursorMapping(CursorType type)
+        {
+            foreach (CursorMapping mapping in cursorMappings)
+            {
+                if (mapping.type == type)
+                {
+                    return mapping;
+                }
+            }
+
+            return cursorMappings[0];
         }
 
         private static Ray GetMouseRay()

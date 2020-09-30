@@ -1,4 +1,5 @@
-﻿using RPG.Combat;
+﻿using GameDevTV.Utils;
+using RPG.Combat;
 using RPG.Core;
 using RPG.Movement;
 using RPG.Resources;
@@ -24,7 +25,7 @@ namespace RPG.Control
         private ActionScheduler _actionScheduler;
 
         // used to give him a guarding behaviour -> return to its original position when done attacking
-        private Vector3 guardPosition;
+        private LazyValue<Vector3> guardPosition;
         private float timeSinceLastSawPlayer = Mathf.Infinity;
         private float timeSinceArrivedAtWaypoint = Mathf.Infinity;
         private int currentWaypointIndex = 0;
@@ -37,7 +38,17 @@ namespace RPG.Control
             _movementController = GetComponent<Mover>();
             _actionScheduler = GetComponent<ActionScheduler>();
 
-            guardPosition = transform.position;
+            guardPosition = new LazyValue<Vector3>(GetGuardPosition);
+        }
+
+        private Vector3 GetGuardPosition()
+        {
+            return transform.position;
+        }
+
+        private void Start() 
+        {
+            guardPosition.ForceInit();
         }
 
         private void Update()
@@ -71,7 +82,7 @@ namespace RPG.Control
 
         private void PatrolBehaviour()
         {
-            Vector3 nextPosition = guardPosition;
+            Vector3 nextPosition = guardPosition.value;
 
             if (patrolPath != null)
             {

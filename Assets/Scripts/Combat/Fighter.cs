@@ -3,10 +3,14 @@ using RPG.Core;
 using RPG.Movement;
 using RPG.Saving;
 using RPG.Resources;
+using RPG.Stats;
+using System.Collections.Generic;
+using GameDevTV.Utils;
+using System;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour, IAction, ISaveable
+    public class Fighter : MonoBehaviour, IAction, ISaveable, IModifierProvider
     {
         [Header("Stats")]
         [SerializeField] private float attackRate = 2f; // time to wait between attacks
@@ -18,8 +22,9 @@ namespace RPG.Combat
 
         private Animator _animator;
         private Mover _movementController;
+        private BaseStats _baseStats;
         private Health _attackTarget;
-        [SerializeField] private Weapon _currentWeapon = null;
+        [SerializeField] private LazyValue<Weapon> _currentWeapon;
 
         float timeSinceLastAttack = Mathf.Infinity;
 
@@ -27,9 +32,20 @@ namespace RPG.Combat
         {
             _animator = GetComponent<Animator>();
             _movementController = GetComponent<Mover>();
+            _baseStats = GetComponent<BaseStats>();
 
-            if (_currentWeapon == null)
-                EquipWeapon(defaultWeapon);
+            _currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
+        }
+
+        private void Start() 
+        {
+            _currentWeapon.ForceInit();
+        }
+
+        private Weapon SetupDefaultWeapon()
+        {
+            AttachWeapon(defaultWeapon);
+            return defaultWeapon;
         }
 
         private void Update()
@@ -59,7 +75,7 @@ namespace RPG.Combat
             if (timeSinceLastAttack > attackRate)
             {
                 // This will trigger the "Hit" event
-                TriggerAttack();
+                TriggerAttack();  
                 timeSinceLastAttack = 0f;
             }
         }
@@ -72,7 +88,7 @@ namespace RPG.Combat
 
         private bool IsInRange()
         {
-            return Vector3.Distance(transform.position, _attackTarget.transform.position) < _currentWeapon.GetRange();
+            return Vector3.Distance(transform.position, _attackTarget.transform.position) < _currentWeapon.value.GetRange();
         }
 
         public bool CanAttack(GameObject combatTarget)
@@ -94,13 +110,14 @@ namespace RPG.Combat
         {
             if (_attackTarget == null) return;
 
-            if (_currentWeapon.HasProjectile())
+            float damage = _baseStats.GetStat(Stat.Damage);
+            if (_currentWeapon.value.HasProjectile())
             {
-                _currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, _attackTarget, gameObject);
+                _currentWeapon.value.LaunchProjectile(rightHandTransform, leftHandTransform, _attackTarget, gameObject, damage);
             }
             else
             {
-                _attackTarget.TakeDamage(gameObject, _currentWeapon.GetDamage());
+                _attackTarget.TakeDamage(gameObject, damage);
             }
         }
 
@@ -122,9 +139,30 @@ namespace RPG.Combat
             _animator.SetTrigger("StopAttack");
         }
 
+        public IEnumerable<float> GetAdditiveModifiers(Stat stat)
+        {
+            if (stat == Stat.Damage)
+            {
+                yield return _currentWeapon.value.GetDamage();
+            }
+        }
+
+        public IEnumerable<float> GetPercentageModifiers(Stat stat)
+        {
+            if (stat == Stat.Damage)
+            {
+                yield return _currentWeapon.value.GetPercentageBonus();
+            }
+        }
+
         public void EquipWeapon(Weapon weapon)
         {
-            _currentWeapon = weapon;
+            _currentWeapon.value = weapon;
+            AttachWeapon(weapon);
+        }
+
+        private void AttachWeapon(Weapon weapon)
+        {
             weapon.Spawn(rightHandTransform, leftHandTransform, _animator);
         }
 
@@ -135,7 +173,7 @@ namespace RPG.Combat
 
         public object CaptureState()
         {
-            return _currentWeapon.name;
+            return _currentWeapon.value.name;
         }
 
         public void RestoreState(object state)

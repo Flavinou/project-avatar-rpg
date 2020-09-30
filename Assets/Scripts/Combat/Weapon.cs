@@ -15,6 +15,8 @@ namespace RPG.Combat
         [Header("Stats")]
         [SerializeField] private bool isRightHanded = true; // 2 units between current player and target to attack
         [SerializeField] private float weaponDamage = 5f; // default player attack power
+        [SerializeField] private float percentageBonus = 0f; // default player attack power
+
         [SerializeField] private float weaponRange = 2f; // 2 units between current player and target to attack
 
         public void Spawn(Transform rightHand, Transform leftHand, Animator animator)
@@ -69,15 +71,20 @@ namespace RPG.Combat
             return projectile != null;
         }
 
-        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator)
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage)
         {
             Projectile projectileInstance = Instantiate(projectile, GetHandTransform(rightHand, leftHand).position, Quaternion.identity);
-            projectileInstance.SetTarget(target, instigator, weaponDamage);
+            projectileInstance.SetTarget(target, instigator, calculatedDamage);
         }
 
         public float GetDamage()
         {
             return weaponDamage;
+        }
+
+        public float GetPercentageBonus()
+        {
+            return percentageBonus;
         }
 
         public float GetRange()
