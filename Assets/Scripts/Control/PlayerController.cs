@@ -2,6 +2,7 @@
 using RPG.Movement;
 using RPG.Combat;
 using RPG.Resources;
+using UnityEngine.EventSystems;
 using System;
 
 namespace RPG.Control
@@ -11,13 +12,6 @@ namespace RPG.Control
         private Mover _movementController;
         private Fighter _fighter;
         private Health _health;
-
-        enum CursorType 
-        {
-            None,
-            Movement,
-            Combat
-        }
 
         [System.Serializable]
         struct CursorMapping
@@ -41,38 +35,67 @@ namespace RPG.Control
         {
             if (!enabled) return;
 
-            if (_health.IsDead()) return;
+            if (InteractWithUI()) return;
 
-            if (InteractWithCombat()) return;
+            if (_health.IsDead()) 
+            {
+                SetCursor(CursorType.None);
+                return;
+            }
+
+            if (InteractWithComponent()) return;
             if (InteractWithMovement()) return;
 
             SetCursor(CursorType.None);
         }
 
-        private bool InteractWithCombat()
+        private bool InteractWithUI()
         {
-            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
-
-            // Trying to find a target to attack
-            foreach (RaycastHit hit in hits)
+            if (EventSystem.current.IsPointerOverGameObject())
             {
-                CombatTarget target = hit.transform.GetComponent<CombatTarget>();
-
-                if (target == null) continue;
-                if (!_fighter.CanAttack(target.gameObject)) continue;
-
-                if (Input.GetMouseButton(1))
-                {
-                    _fighter.Attack(target.gameObject);
-                }
-
-                SetCursor(CursorType.Combat);
-
-                // If we found one, return true
+                SetCursor(CursorType.UI);
                 return true;
             }
 
             return false;
+        }
+
+        private bool InteractWithComponent()
+        {
+            RaycastHit[] hits = RaycastAllSorted();
+
+            // Trying to find a component we can interact with
+            foreach (RaycastHit hit in hits)
+            {
+                IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
+                foreach (IRaycastable raycastable in raycastables)
+                {
+                    if (raycastable.HandleRaycast(this))
+                    {
+                        SetCursor(raycastable.GetCursorType());
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        RaycastHit[] RaycastAllSorted()
+        {
+            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
+            float[] distances = new float[hits.Length];
+
+            // Build up distances array
+            for (int i = 0; i < distances.Length; i++)
+            {
+                distances[i] = hits[i].distance;
+            }
+
+            // Sort array by distance
+            Array.Sort(distances, hits);
+
+            return hits;
         }
 
         private bool InteractWithMovement()

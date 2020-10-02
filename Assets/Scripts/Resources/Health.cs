@@ -90,7 +90,7 @@ namespace RPG.Resources
 
         private void AwardExperience(GameObject instigator)
         {
-            print("Instigator : " + instigator.name);
+            // print("Instigator : " + instigator.name);
             Experience experience = instigator.GetComponent<Experience>();
 
             if (experience == null) return;
