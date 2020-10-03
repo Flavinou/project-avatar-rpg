@@ -58,6 +58,9 @@
      <Compile Include="Assets\Asset Packs\GameDev.tv Assets\Scripts\Utils\LazyValue.cs" />
      <Compile Include="Assets\Asset Packs\GE Common Assets\GE Toggle Full Screen\Scripts\GE_ToggleFullScreenUI.cs" />
      <Compile Include="Assets\Asset Packs\GE Common Assets\Scripts\GE_UIResponder.cs" />
+     <Compile Include="Assets\Scripts\Attributes\Health.cs" />
+     <Compile Include="Assets\Scripts\Attributes\HealthBar.cs" />
+     <Compile Include="Assets\Scripts\Attributes\HealthDisplay.cs" />
      <Compile Include="Assets\Scripts\Cinematics\CinematicControlRemover.cs" />
      <Compile Include="Assets\Scripts\Cinematics\CinematicTrigger.cs" />
      <Compile Include="Assets\Scripts\Combat\CombatTarget.cs" />
@@ -78,8 +81,6 @@
      <Compile Include="Assets\Scripts\Core\IAction.cs" />
      <Compile Include="Assets\Scripts\Core\PersistentObjectsSpawner.cs" />
      <Compile Include="Assets\Scripts\Movement\Mover.cs" />
-     <Compile Include="Assets\Scripts\Resources\Health.cs" />
-     <Compile Include="Assets\Scripts\Resources\HealthDisplay.cs" />
      <Compile Include="Assets\Scripts\Saving\ISaveable.cs" />
      <Compile Include="Assets\Scripts\Saving\SaveableEntity.cs" />
      <Compile Include="Assets\Scripts\Saving\SavingSystem.cs" />
