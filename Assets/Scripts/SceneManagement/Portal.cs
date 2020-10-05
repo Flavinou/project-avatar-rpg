@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
+using RPG.Control;
 
 namespace RPG.SceneManagement
 {
@@ -34,6 +35,10 @@ namespace RPG.SceneManagement
 
         private IEnumerator Transition()
         {
+            SavingWrapper wrapper = FindObjectOfType<SavingWrapper>();
+            Fader fader = FindObjectOfType<Fader>();
+            PlayerController playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
             if (sceneBuildIndex < 0)
             {
                 Debug.LogError("No scene linked to the " + gameObject.name + ", be sure to provide one.");
@@ -42,15 +47,19 @@ namespace RPG.SceneManagement
 
             DontDestroyOnLoad(gameObject);
 
-            Fader fader = FindObjectOfType<Fader>();
+            // Remove control
+            playerController.enabled = false;
 
             yield return fader.FadeOut(fadeOutDelay);
 
             // save current level state
-            SavingWrapper wrapper = FindObjectOfType<SavingWrapper>();
             wrapper.Save();
 
             yield return SceneManager.LoadSceneAsync(sceneBuildIndex);
+
+            // Remove control
+            PlayerController newPlayerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            newPlayerController.enabled = false;
 
             // load current level state
             wrapper.Load();
@@ -61,7 +70,10 @@ namespace RPG.SceneManagement
             wrapper.Save();
 
             yield return new WaitForSeconds(fadeWaitTime);
-            yield return fader.FadeIn(fadeInDelay);
+            fader.FadeIn(fadeInDelay);
+
+            // Restore control
+            newPlayerController.enabled = true;
 
             Destroy(gameObject);
         }
