@@ -26,7 +26,6 @@ namespace RPG.SceneManagement
             Fader fader = FindObjectOfType<Fader>();
             fader.FadeOutImmediate();
             yield return fader.FadeIn(fadeInTime);
-            Debug.Log(_savingSystem);
         }
 
         private void Update()

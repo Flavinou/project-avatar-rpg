@@ -316,6 +316,11 @@ PrefabInstance:
       propertyPath: m_Follow
       value: 
       objectReference: {fileID: 1926120861671121322}
+    - target: {fileID: 6565511918750646084, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
+        type: 3}
+      propertyPath: m_CameraDistance
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ead8a0c0d0f422409e5c4c9595baef0, type: 3}
 --- !u!4 &7566250740416282453 stripped
