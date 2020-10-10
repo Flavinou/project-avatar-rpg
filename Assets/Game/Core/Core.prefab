@@ -273,26 +273,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6565511918268919667, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
         type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6565511918268919667, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.94381624
-      objectReference: {fileID: 0}
-    - target: {fileID: 6565511918268919667, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.3304707
-      objectReference: {fileID: 0}
-    - target: {fileID: 6565511918268919667, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6565511918268919667, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
-        type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
@@ -316,11 +296,6 @@ PrefabInstance:
       propertyPath: m_Follow
       value: 
       objectReference: {fileID: 1926120861671121322}
-    - target: {fileID: 6565511918750646084, guid: 1ead8a0c0d0f422409e5c4c9595baef0,
-        type: 3}
-      propertyPath: m_CameraDistance
-      value: 12
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ead8a0c0d0f422409e5c4c9595baef0, type: 3}
 --- !u!4 &7566250740416282453 stripped
