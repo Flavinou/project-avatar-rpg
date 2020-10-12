@@ -40,9 +40,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chaseDistance: 5
   suspicionTime: 5
+  aggroCoolDownTime: 5
   patrolPath: {fileID: 0}
   waypointTolerance: 1
   waypointDwellTime: 1.5
+  shoutDistance: 3
   patrolSpeedFraction: 0.2
 --- !u!114 &7497718376852602496
 MonoBehaviour:
@@ -56,7 +58,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfe095a21248b147ad1abb070bb6b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 6
+  maxSpeed: 4.5
+  maxNavPathLength: 40
 --- !u!1001 &3487109964149459666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -217,6 +220,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
         type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
       propertyPath: health
       value: 20
       objectReference: {fileID: 0}
@@ -224,6 +232,31 @@ PrefabInstance:
         type: 3}
       propertyPath: healthPoints
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 6964346576531747944}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: Aggravate
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760757646166120308, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: takeDamage.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3832305061044802907, guid: 634520f3c5f2d9a428240af38e6bbc53,
         type: 3}
@@ -309,7 +342,7 @@ PrefabInstance:
     - target: {fileID: 7191558133316238520, guid: 634520f3c5f2d9a428240af38e6bbc53,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 634520f3c5f2d9a428240af38e6bbc53, type: 3}

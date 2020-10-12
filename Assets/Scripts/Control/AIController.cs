@@ -4,6 +4,7 @@ using RPG.Core;
 using RPG.Movement;
 using RPG.Attributes;
 using UnityEngine;
+using System;
 
 namespace RPG.Control
 {
@@ -11,9 +12,11 @@ namespace RPG.Control
     {
         [SerializeField] private float chaseDistance = 5f;
         [SerializeField] private float suspicionTime = 3f;
+        [SerializeField] private float aggroCoolDownTime = 5f;
         [SerializeField] private PatrolPath patrolPath;
         [SerializeField] private float waypointTolerance = 1f;
         [SerializeField] private float waypointDwellTime = 1.5f; // time to wait at a waypoint
+        [SerializeField] private float shoutDistance = 5f;
 
         [Range(0, 1)]
         [SerializeField] private float patrolSpeedFraction = 0.2f;
@@ -28,6 +31,7 @@ namespace RPG.Control
         private LazyValue<Vector3> guardPosition;
         private float timeSinceLastSawPlayer = Mathf.Infinity;
         private float timeSinceArrivedAtWaypoint = Mathf.Infinity;
+        private float timeSinceAggravated = Mathf.Infinity;
         private int currentWaypointIndex = 0;
 
         private void Awake()
@@ -55,7 +59,7 @@ namespace RPG.Control
         {
             if (_health.IsDead()) return;
 
-            if (InAttackRangeOfPlayer() && _fighter.CanAttack(_player))
+            if (IsAggravated() && _fighter.CanAttack(_player))
             {
                 // Attack player
                 AttackBehaviour();
@@ -74,10 +78,17 @@ namespace RPG.Control
             UpdateTimers();
         }
 
+        public void Aggravate()
+        {
+            // Sets aggro timer
+            timeSinceAggravated = 0;
+        }
+
         private void UpdateTimers()
         {
             timeSinceLastSawPlayer += Time.deltaTime;
             timeSinceArrivedAtWaypoint += Time.deltaTime;
+            timeSinceAggravated += Time.deltaTime;
         }
 
         private void PatrolBehaviour()
@@ -127,18 +138,36 @@ namespace RPG.Control
         {
             timeSinceLastSawPlayer = 0f;
             _fighter.Attack(_player);
+
+            AggravateNearbyEnemies();
+        }
+
+        private void AggravateNearbyEnemies()
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, shoutDistance, Vector3.up, 0f);
+
+            foreach (RaycastHit hit in hits)
+            {
+                AIController ai = hit.collider.GetComponent<AIController>();
+                if (ai == null) continue;
+
+                ai.Aggravate();
+            }
+        }
+
+        private bool IsAggravated()
+        {
+            float distanceToPlayer = Vector3.Distance(_player.transform.position, transform.position);
+            return distanceToPlayer < chaseDistance || timeSinceAggravated < aggroCoolDownTime;
         }
 
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, chaseDistance);
-        }
 
-        private bool InAttackRangeOfPlayer()
-        {
-            float distanceToPlayer = Vector3.Distance(_player.transform.position, transform.position);
-            return distanceToPlayer < chaseDistance;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, shoutDistance);
         }
     }
 }
