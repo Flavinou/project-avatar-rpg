@@ -4768,6 +4768,7 @@ MonoBehaviour:
     texture: {fileID: 2800000, guid: 2e71a8202d3b4a3448ec85ced5a40265, type: 3}
     hotspot: {x: 0, y: 0}
   maxNavMeshProjectionDistance: 1
+  raycastRadius: 1
 --- !u!1001 &5086069642353696147
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4779,10 +4780,15 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1697806879788788573, guid: 634520f3c5f2d9a428240af38e6bbc53,
+        type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: d288a0e4a2d923b46898986e979da643, type: 3}
     - target: {fileID: 2109179552108521431, guid: 634520f3c5f2d9a428240af38e6bbc53,
         type: 3}
       propertyPath: uniqueIdentifier
-      value: player
+      value: e8390111-f4a7-48fe-b7e7-cad3a89cbe60
       objectReference: {fileID: 0}
     - target: {fileID: 3832305061044802907, guid: 634520f3c5f2d9a428240af38e6bbc53,
         type: 3}
@@ -4930,6 +4936,10 @@ PrefabInstance:
     - target: {fileID: 133518, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
       propertyPath: m_Name
       value: Character_Knights_Soldier_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 133518, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 417656, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
       propertyPath: m_LocalPosition.x
